@@ -1,0 +1,5 @@
+tests
+node_modules
+.env
+jest.config.js
+nodemon.json
