@@ -2,6 +2,7 @@ import './utilities/config-secrets';
 import express from 'express';
 import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
+import authService from './middleware/auth-service';
 
 
 const PORT = 3001;
@@ -20,7 +21,7 @@ const configureApp = (middleware?: any[]) =>{
     return app;
 }
 
-const app = configureApp();
+const app = configureApp([authService]);
 
 app.get('/', (req, res) => res.send('Hello, TypeScript! This is auth service.'));
 
