@@ -31,7 +31,8 @@ services:
       RABBIT_URL: amqp://rabbitmq
       DOCKER: 1
     secrets:
-      - SERVICE_SECRET
+      - AUTH_SERVICE_SECRET
+      - AUTH_DB_URL
   gateway_api:
     build: ./services/gateway
     ports:
@@ -41,6 +42,13 @@ services:
       - auth_service
     environment:
       REDIS_URL: redis://redis:6379
+      DOCKER: 1
+    secrets:
+      - GATEWAY_DB_URL
 secrets:
-  SERVICE_SECRET:
-    file: ./secrets/authentication/SERVICE_SECRET.txt
+  AUTH_SERVICE_SECRET:
+    file: ./secrets/authentication/AUTH_SERVICE_SECRET.txt
+  AUTH_DB_URL:
+    file: ./secrets/authentication/AUTH_DB_URL.txt
+  GATEWAY_DB_URL:
+    file: ./secrets/gateway/GATEWAY_DB_URL.txt
