@@ -29,3 +29,18 @@ services:
     environment:
       REDIS_URL: redis://redis:6379
       RABBIT_URL: amqp://rabbitmq
+      DOCKER: 1
+    secrets:
+      - SERVICE_SECRET
+  gateway_api:
+    build: ./services/gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+      - auth_service
+    environment:
+      REDIS_URL: redis://redis:6379
+secrets:
+  SERVICE_SECRET:
+    file: ./secrets/authentication/SERVICE_SECRET.txt

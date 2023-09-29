@@ -1,3 +1,4 @@
+import './utilities/config-secrets';
 import express from 'express';
 
 const app = express();
