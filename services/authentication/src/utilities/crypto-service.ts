@@ -1,8 +1,8 @@
 import crypto from 'crypto';
 
 const { AUTH_HASH_SALT_LENGTH,
-    AUTH_HASH_ITERS,
-    AUTH_HASH_KEY_LEN,
+    AUTH_HASH_ITER_ROUNDS,
+    AUTH_HASH_KEY_LENGTH,
     AUTH_HASH_DIGEST } = process.env;
 
 export function hashString(string: string): Promise<string> {
@@ -10,8 +10,8 @@ export function hashString(string: string): Promise<string> {
     return new Promise((resolve, reject) =>
         crypto.pbkdf2(string,
             salt,
-            Number(AUTH_HASH_ITERS),
-            Number(AUTH_HASH_KEY_LEN),
+            Number(AUTH_HASH_ITER_ROUNDS),
+            Number(AUTH_HASH_KEY_LENGTH),
             String(AUTH_HASH_DIGEST),
             (err, key) => {
                 if (err) {
@@ -26,8 +26,8 @@ export function compareHash(string: string, hash: string): Promise<boolean> {
     return new Promise((resolve, reject) =>
         crypto.pbkdf2(string,
             salt,
-            Number(AUTH_HASH_ITERS),
-            Number(AUTH_HASH_KEY_LEN),
+            Number(AUTH_HASH_ITER_ROUNDS),
+            Number(AUTH_HASH_KEY_LENGTH),
             String(AUTH_HASH_DIGEST),
             (err, compKey) => {
                 if (err) {
