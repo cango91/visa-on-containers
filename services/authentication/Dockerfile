@@ -8,6 +8,8 @@ RUN npm install
 
 COPY . .
 
+RUN rm -rf /tests
+
 RUN npm run build
 
 EXPOSE 3001
