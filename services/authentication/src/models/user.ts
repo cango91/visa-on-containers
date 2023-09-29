@@ -1,5 +1,5 @@
-import mongoose, { CallbackError, Schema } from 'mongoose';
-import { hashString } from '../utilities/crypto-service';
+import mongoose, { Schema } from 'mongoose';
+import { hashString, compareHash } from '../utilities/crypto-service';
 
 function validateEmailPattern(val: string) {
     return /^[^@\s]+@[^@\s]+\.[^@\s]+$/gi.test(val);
@@ -26,7 +26,7 @@ const userSchema = new Schema({
     },
     role: {
         type: String,
-        enum: ['customer','employee'],
+        enum: ['customer', 'employee'],
         required: true,
         default: 'customer',
     }
@@ -60,4 +60,19 @@ userSchema.pre("save", async function (next) {
     }
 });
 
-export default mongoose.model('User', userSchema);
+userSchema.methods.checkPassword = function (password: string) {
+    return compareHash(password, this.password);
+}
+
+export interface IUserMethods {
+    checkPassword(password:string): Promise<boolean>;
+}
+
+export interface IUserDocument extends mongoose.Document, IUserMethods{
+    email: string;
+    password: string;
+    googleId: string;
+    role: string;
+}
+
+export default mongoose.model<IUserDocument>('User', userSchema);

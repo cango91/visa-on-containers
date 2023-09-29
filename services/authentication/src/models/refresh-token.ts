@@ -45,4 +45,20 @@ refreshTokenSchema.statics.isValid = async function (token: string, user: string
     }
 }
 
-export default mongoose.model('RefreshToken', refreshTokenSchema);
+export interface IRefreshTokenMethods {
+    revoke: () => any;
+    isValid: () => boolean;
+}
+
+export interface IRefreshTokenDocument extends mongoose.Document, IRefreshTokenMethods {
+    user: Schema.Types.ObjectId;
+    token: string;
+    expires: Date;
+    revoked: boolean;
+}
+
+export interface IRefreshTokenModel extends mongoose.Model<IRefreshTokenDocument>{
+    isValid: (token: string, user: string | Schema.Types.ObjectId) => Promise<boolean>; 
+}
+
+export default mongoose.model<IRefreshTokenDocument, IRefreshTokenModel>('RefreshToken', refreshTokenSchema);
