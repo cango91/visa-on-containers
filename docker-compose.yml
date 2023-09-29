@@ -1,0 +1,31 @@
+version: '3'
+services:
+  redis:
+    image: 'redis'
+    command:
+      [
+        "redis-server",
+        "--maxmemory-policy",
+        "allkeys-lru",
+        "--maxmemory",
+        "128mb"
+      ]
+    ports:
+      - "6379:6379"
+  rabbitmq:
+    image: 'rabbitmq:3-management'
+    ports:
+      - "5672:5672" # AMQP protocol
+      - "15672:15672" # Management UI
+    environment:
+      RABBIT_URL: amqp://rabbitmq
+  auth_service:
+    build: ./services/authentication
+    ports:
+      - "3001:3001"
+    depends_on:
+      - redis
+      - rabbitmq
+    environment:
+      REDIS_URL: redis://redis:6379
+      RABBIT_URL: amqp://rabbitmq
