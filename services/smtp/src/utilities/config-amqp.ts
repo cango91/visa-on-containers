@@ -1,7 +1,8 @@
+//const amqp = require('amqplib');
 import amqp, { Connection, Channel } from 'amqplib';
 
 let channel: Channel, connection: Connection;
-const connectionString = process.env.RABBIT_URL ? process.env.RABBIT_URL : 'amqp://localhost/'
+const connectionString = process.env.RABBIT_URL ? process.env.RABBIT_URL : 'amqp://localhost'
 
 export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
   if (retries === 0) {
@@ -9,15 +10,8 @@ export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
   }
 
   try {
-    let fullConnString = connectionString.split("://");
-    const { EMAIL_RABBIT_USER, EMAIL_RABBIT_PASSWORD } = process.env;
-    fullConnString = [fullConnString[0], "://", EMAIL_RABBIT_USER!, ":", EMAIL_RABBIT_PASSWORD!, '@', fullConnString[1]];
-    const finalConnectionString = fullConnString.join('');
-    connection = await amqp.connect(finalConnectionString);
+    connection = await amqp.connect(connectionString);
     channel = await connection.createChannel();
-    await channel.assertExchange('emailExchange', 'direct', {
-      durable: true,
-    });
     console.log("Connected to RabbitMQ");
   } catch (error) {
     console.error(`Failed to connect to RabbitMQ, retrying in ${backoff}ms...`);

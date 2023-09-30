@@ -47,6 +47,7 @@ export async function sendEmail(req: Request, res: Response) {
         }
 
         await channel.assertQueue(qName);
+        await channel.bindQueue(qName, 'emailExchange', qName);
 
         const messagePayload:IRawMail = {
             recipient: params.recipient,
@@ -59,7 +60,7 @@ export async function sendEmail(req: Request, res: Response) {
             }
         };
 
-        channel.sendToQueue(qName, Buffer.from(JSON.stringify(messagePayload)));
+        channel.publish('emailExchange', qName, Buffer.from(JSON.stringify(messagePayload)));
         return res.status(200).json({ message: "Email prepared and queued", body, subject, bodyHtml });
 
     } catch (error) {
