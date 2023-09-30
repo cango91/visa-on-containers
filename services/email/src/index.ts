@@ -2,6 +2,8 @@ import './utilities/config-secrets';
 import express from 'express';
 import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
+import authService from './middleware/auth-service';
+import templateRouter from './routes/email-template-route';
 
 const PORT = 4000;
 
@@ -19,8 +21,10 @@ const configureApp = (middleware?: any[]) =>{
     return app;
 }
 
-const app = configureApp();
+const app = configureApp([authService]);
 
-app.get('/', (req, res) => res.send('Hello, TypeScript! This is auth service.'));
+//app.get('/', (req, res) => res.send('Hello, TypeScript! This is email service.'));
+
+app.use('/templates', templateRouter);
 
 app.listen(PORT, () => console.log(`Mail service running at http://localhost:${PORT}/`));
