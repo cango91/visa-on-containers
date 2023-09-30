@@ -5,6 +5,7 @@ import morgan from 'morgan';
 import authService from './middleware/auth-service';
 import templateRouter from './routes/email-template-route';
 import { initializeRabbitMQ } from './utilities/config-amqp';
+import emailRouter from './routes/email-template-route';
 
 const PORT = 4000;
 
@@ -27,5 +28,6 @@ const app = configureApp([authService]);
 (async() => await initializeRabbitMQ())();
 
 app.use('/api/templates', templateRouter);
+app.use('/api/email', emailRouter);
 
 app.listen(PORT, () => console.log(`Mail service running at http://localhost:${PORT}/`));
