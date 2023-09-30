@@ -4,6 +4,7 @@ import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import authService from './middleware/auth-service';
 import templateRouter from './routes/email-template-route';
+import { initializeRabbitMQ } from './utilities/config-amqp';
 
 const PORT = 4000;
 
@@ -23,8 +24,8 @@ const configureApp = (middleware?: any[]) =>{
 
 const app = configureApp([authService]);
 
-//app.get('/', (req, res) => res.send('Hello, TypeScript! This is email service.'));
+(async() => await initializeRabbitMQ())();
 
-app.use('/templates', templateRouter);
+app.use('/api/templates', templateRouter);
 
 app.listen(PORT, () => console.log(`Mail service running at http://localhost:${PORT}/`));
