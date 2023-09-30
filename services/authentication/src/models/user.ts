@@ -29,6 +29,11 @@ const userSchema = new Schema({
         enum: ['customer', 'employee'],
         required: true,
         default: 'customer',
+    },
+    emailVerified: {
+        type: Boolean,
+        required: true,
+        default: false,
     }
 }, {
     timestamps: true,
@@ -73,6 +78,7 @@ export interface IUserDocument extends mongoose.Document, IUserMethods{
     password: string;
     googleId: string;
     role: string;
+    emailVerified: boolean;
 }
 
 export default mongoose.model<IUserDocument>('User', userSchema);
