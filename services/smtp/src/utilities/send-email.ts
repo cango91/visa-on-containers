@@ -1,16 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import { ConsumeMessage } from "amqplib";
-
-interface IRawMail {
-    recipient: string;
-    cc?: string[];
-    bcc?: string[];
-    content: {
-        subject: string;
-        body: string;
-        bodyHtml?: string;
-    }
-}
+import { IRawMail } from '@cango91/visa-on-containers-common';
 
 const transporter = nodemailer.createTransport({
     host: process.env.SMTP_EMAIL_HOST,

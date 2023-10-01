@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { v4 as uuid } from 'uuid';
-import { IRawMail, ISendMail } from '../interfaces/send-mail';
+import {IRawMail, ISendMail} from '@cango91/visa-on-containers-common';
 import EmailTemplate from '../models/email-template';
 import { getChannel } from '../utilities/config-amqp';
 
