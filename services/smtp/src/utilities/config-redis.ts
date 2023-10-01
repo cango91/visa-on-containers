@@ -1,4 +1,4 @@
-import redis from 'redis';
+import * as redis from 'redis';
 const client = process.env.REDIS_URL ? redis.createClient({ url: process.env.REDIS_URL }) : redis.createClient();
 
 client.on('error', (err) => {

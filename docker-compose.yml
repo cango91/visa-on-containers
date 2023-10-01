@@ -29,39 +29,6 @@ services:
       - SMTP_RABBIT_USER
       - EMAIL_RABBIT_USER
       - EMAIL_RABBIT_PASSWORD
-  auth_service:
-    build: ./services/authentication
-    ports:
-      - "3001:3001"
-    depends_on:
-      - redis
-      - rabbitmq
-    environment:
-      REDIS_URL: redis://redis:6379
-      RABBIT_URL: amqp://rabbitmq
-      DOCKER: 1
-    secrets:
-      - AUTH_SERVICE_SECRET
-      - AUTH_DB_URL
-      - AUTH_HASH_DIGEST
-      - AUTH_HASH_ITER_ROUNDS
-      - AUTH_HASH_KEY_LENGTH
-      - AUTH_HASH_SALT_LENGTH
-      - AUTH_RABBIT_USER
-      - AUTH_RABBIT_PASSWORD
-  gateway_api:
-    build: ./services/gateway
-    ports:
-      - "3000:3000"
-    depends_on:
-      - redis
-      - auth_service
-    environment:
-      REDIS_URL: redis://redis:6379
-      DOCKER: 1
-    secrets:
-      - AUTH_SERVICE_SECRET
-      - EMAIL_SERVICE_SECRET
 secrets:
   SMTP_RABBIT_USER:
     file: ./secrets/smtp/SMTP_RABBIT_USER.txt

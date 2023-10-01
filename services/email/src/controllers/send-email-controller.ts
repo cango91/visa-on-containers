@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { v4 as uuid } from 'uuid';
 import { IRawMail, ISendMail } from '../interfaces/send-mail';
 import EmailTemplate from '../models/email-template';
 import { getChannel } from '../utilities/config-amqp';
@@ -60,7 +61,7 @@ export async function sendEmail(req: Request, res: Response) {
             }
         };
 
-        channel.publish('emailExchange', qName, Buffer.from(JSON.stringify(messagePayload)));
+        channel.publish('emailExchange', qName, Buffer.from(JSON.stringify(messagePayload)),{messageId: uuid()});
         return res.status(200).json({ message: "Email prepared and queued", body, subject, bodyHtml });
 
     } catch (error) {
