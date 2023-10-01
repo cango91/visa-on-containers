@@ -38,11 +38,12 @@ A web-app to be used by a visa consultancy agency for:
 ### Common
 + Authentication
 + API Gateway
-+ SMTP
++ ✅ SMTP
 
 ### Employee-Facing
 + User Management
 + Application Workflow
++ ✅ Email Service
 
 ### Customer-Facing
 + User Onboarding
