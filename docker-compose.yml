@@ -2,16 +2,11 @@ version: '3'
 services:
   redis:
     image: 'redis'
-    command:
-      [
-        "redis-server",
-        "--maxmemory-policy",
-        "allkeys-lru",
-        "--maxmemory",
-        "128mb"
-      ]
+    command: ["sh", "-c", "redis-server --requirepass $$(cat /run/secrets/REDIS_PASS) --maxmemory-policy allkeys-lru --maxmemory 128mb"]
     ports:
       - "6379:6379"
+    secrets:
+      - REDIS_PASS
   rabbitmq:
     image: 'rabbitmq:3-management'
     command: ["bash", "/scripts/rabbit_startup.sh"]
@@ -30,6 +25,8 @@ services:
       - EMAIL_RABBIT_USER
       - EMAIL_RABBIT_PASSWORD
 secrets:
+  REDIS_PASS:
+    file: ./secrets/REDIS_PASS.txt
   SMTP_RABBIT_USER:
     file: ./secrets/smtp/SMTP_RABBIT_USER.txt
   SMTP_RABBIT_PASSWORD:

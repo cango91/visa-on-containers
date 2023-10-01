@@ -1,5 +1,15 @@
 import * as redis from 'redis';
-const client = process.env.REDIS_URL ? redis.createClient({ url: process.env.REDIS_URL }) : redis.createClient();
+const redisOptions: redis.RedisClientOptions = {};
+
+if (process.env.REDIS_URL) {
+  redisOptions.url = process.env.REDIS_URL;
+}
+
+if (process.env.REDIS_PASS) {
+  redisOptions.password = process.env.REDIS_PASS;
+}
+
+const client = redis.createClient(redisOptions);
 
 client.on('error', (err) => {
     console.error(`Error in Redis client: ${err}`);
