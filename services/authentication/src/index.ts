@@ -3,6 +3,7 @@ import express from 'express';
 import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import authService from './middleware/auth-service';
+import { initializeRabbitMQ } from './utilities/config-amqp';
 
 
 const PORT = 3001;
@@ -23,6 +24,8 @@ const configureApp = (middleware?: any[]) =>{
 
 const app = configureApp([authService]);
 
-app.get('/', (req, res) => res.send('Hello, TypeScript! This is auth service.'));
+(async ()=>{
+    await initializeRabbitMQ();
+})();
 
 app.listen(PORT, () => console.log(`Authentication service running at http://localhost:${PORT}/`));

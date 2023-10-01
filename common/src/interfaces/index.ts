@@ -1,3 +1,6 @@
+////////////
+// EMAIL 
+///////////
 export interface ISendMail {
     recipient: string;
     cc?: string[];
@@ -25,4 +28,22 @@ export interface IRawMail{
         body: string;
         bodyHtml?: string;
     }
+}
+
+////////////
+// AUTH 
+///////////
+
+export interface ILocalAuthRequest{
+    email: string;
+    password: string;
+}
+
+export interface IOAuthRequest{
+    code: string;
+}
+
+export interface IAuthResponse{
+    accessToken: string;
+    refreshToken: string;
 }

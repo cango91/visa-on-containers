@@ -36,3 +36,7 @@ export function compareHash(string: string, hash: string): Promise<boolean> {
                 resolve(key === compKey.toString('hex'));
             }));
 }
+
+export function digest(data:string){
+    return crypto.createHash('sha256').update(data).digest('hex');
+}

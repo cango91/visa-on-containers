@@ -27,3 +27,14 @@ export interface IRawMail {
         bodyHtml?: string;
     };
 }
+export interface ILocalAuthRequest {
+    email: string;
+    password: string;
+}
+export interface IOAuthRequest {
+    code: string;
+}
+export interface IAuthResponse {
+    accessToken: string;
+    refreshToken: string;
+}
