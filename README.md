@@ -16,6 +16,7 @@ A web-app to be used by a visa consultancy agency for:
 ### Common Services
 + **Authentication Service:** For both customer and employee login
 + **API Gateway:** To handle and route requests to appropriate services
++ **SMTP Service:** To send verification, status update and promotional emails
 + **~~Database Service:~~** Using managed services for MVP
 
 ### Employee-Facing Services
@@ -23,6 +24,7 @@ A web-app to be used by a visa consultancy agency for:
 + **Application Workflow:** Manages the lifecycle of each visa application. Job tracking
 + **Consultation Booking:** Manages consultant schedules and bookings
 + **Reporting and Analytics:** Performance metrics, application statuses, etc.
++ **Email Service:** For CRUD operations on email templates and sending bulk emails
 
 ### Customer-Facing Services
 + **User Onboarding:** For initial data collection and document upload
@@ -36,6 +38,7 @@ A web-app to be used by a visa consultancy agency for:
 ### Common
 + Authentication
 + API Gateway
++ SMTP
 
 ### Employee-Facing
 + User Management

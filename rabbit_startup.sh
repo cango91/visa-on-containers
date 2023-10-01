@@ -28,9 +28,9 @@ SERVICE_CONFIGURE_MAPPING["EMAIL"]="^(verificationEmails|newsEmails|promotionEma
 SERVICE_WRITE_MAPPING["EMAIL"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|emailExchange)$"
 SERVICE_READ_MAPPING["EMAIL"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|emailExchange)$"
 
-SERVICE_CONFIGURE_MAPPING["SMTP"]=""
-SERVICE_WRITE_MAPPING["SMTP"]=""
-SERVICE_READ_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails)$"
+SERVICE_CONFIGURE_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|emailExchange)$"
+SERVICE_WRITE_MAPPING["SMTP"]="^(emailExchange)$"
+SERVICE_READ_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|emailExchange)$"
 
 # Loop through each service and create a RabbitMQ user for it
 for SERVICE in "${SERVICES[@]}"; do
