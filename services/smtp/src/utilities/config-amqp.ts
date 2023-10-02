@@ -12,6 +12,7 @@ export async function connectRabbitMQ() {
   const finalConnectionString = fullConnString.join('');
   connection = await amqp.connect(finalConnectionString);
   await res();
+  console.log("Connected to RabbitMQ");
 }
 
 export async function initializeRabbitMQ() {
