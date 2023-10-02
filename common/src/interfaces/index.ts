@@ -1,4 +1,3 @@
-import amqlib from 'amqplib';
 ////////////
 // EMAIL 
 ///////////
@@ -50,33 +49,26 @@ export interface IAuthResponse {
 }
 
 ////////////
-// RABBITMQ 
+// FUNCTIONS 
 ///////////
 
-// export async function CreateExchangesAndQueues() {
-//     const exchanges = [
-//         {
-//             name: "auth-exchange", type: "direct", options: { durable: true }, boundQueues: [
-//                 {name: "verificationToken", options: {durable:true,exclusive:true}, routingKey: "auth.token"}
-//             ]
-//         },
-//         { name: "email-exchange", type: "direct", options: { durable: true }, boundQueues: [
-//             {name: "verificationEmails", options: {durable: true}, routingKey: "verificationEmails"},
-//             {name: "statusUpdateEmails", options: {durable: true}, routingKey: "statusUpdateEmails"},
-//             {name: "promotionEmails", options: {durable: true}, routingKey: "promotionEmails"},
-//             {name: "newsEmails", options: {durable: true}, routingKey: "newsEmails"},
-//             {name: "genericEmails", options: {durable: true}, routingKey: "genericEmails"},
-//         ] },
-//         {
-//             name: "gateway-exchange", type: "direct", options: { durable: true }, boundQueues: [
-//                 { name: "authResend", options: { durable: true, exclusive: true }, routingKey: "auth.resend" },
-//                 { name: "authCallback", options: { durable: true, exclusive: true }, routingKey: "auth.callback" },
-//                 { name: "sendVerification", options: { durable: true, exclusive: true }, routingKey: "gateway.send-verification" },
-//             ]
-//         }
-//     ];
-//     exchanges.forEach(exchange => {
-        
-//     })
+export async function GenericBackoff(func: () => Promise<any>, backoff = 2000, max_backoff = 60000) {
+    try {
+        await func();
+    } catch (error) {
+        await new Promise(resolve => setTimeout(resolve, backoff));
+        return GenericBackoff(func, Math.min(max_backoff, backoff * 2), max_backoff);
+    }
+}
 
-// }
+export async function GenericBackoffWithMaxRetry(func: () => Promise<any>, backoff = 2000, retries = 10) {
+    try {
+        await func();
+    } catch (e) {
+        if (retries <= 0) {
+            throw new Error("Reached max retries");
+        }
+        await new Promise(resolve => setTimeout(resolve, backoff));
+        return GenericBackoffWithMaxRetry(func, backoff * 2, retries - 1);
+    }
+}

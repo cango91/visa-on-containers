@@ -38,3 +38,5 @@ export interface IAuthResponse {
     accessToken: string;
     refreshToken: string;
 }
+export declare function GenericBackoff(func: () => Promise<any>, backoff?: number, max_backoff?: number): Promise<void>;
+export declare function GenericBackoffWithMaxRetry(func: () => Promise<any>, backoff?: number, retries?: number): Promise<void>;

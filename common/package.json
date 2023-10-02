@@ -1,6 +1,6 @@
 {
   "name": "@cango91/visa-on-containers-common",
-  "version": "0.1.4",
+  "version": "0.1.6",
   "description": "common configuration and interfaces for mvp",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
