@@ -60,7 +60,7 @@ export async function GenericBackoff(func: () => Promise<any>, backoff = 2000, m
             console.log(msg, `... Retrying in ${backoff}ms`);
         }
         await new Promise(resolve => setTimeout(resolve, backoff));
-        return GenericBackoff(func, Math.min(max_backoff, backoff * 2), max_backoff,msg);
+        return GenericBackoff(func, Math.min(max_backoff, backoff * 2), max_backoff, msg);
     }
 }
 
@@ -75,6 +75,6 @@ export async function GenericBackoffWithMaxRetry(func: () => Promise<any>, backo
             console.log(msg, `... Retrying in ${backoff}ms`);
         }
         await new Promise(resolve => setTimeout(resolve, backoff));
-        return GenericBackoffWithMaxRetry(func, backoff * 2, retries - 1,msg);
+        return GenericBackoffWithMaxRetry(func, backoff * 2, retries - 1, msg);
     }
 }

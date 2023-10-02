@@ -58,12 +58,13 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
         const verification = await createAndCacheTokenForUser(user._id);
         const channel = getChannel();
 
-        await channel.assertQueue("verificationTokens", { durable: true, exclusive: true });
+        // await channel.assertQueue("verificationTokens", { durable: true, exclusive: true });
         const messagePayload = {
             token: verification.token,
             email: user.email
         }
-        channel.sendToQueue("verificationTokens", Buffer.from(JSON.stringify(messagePayload)), { messageId: uuid() });
+        // channel.sendToQueue("verificationTokens", Buffer.from(JSON.stringify(messagePayload)), { messageId: uuid() });
+        channel.publish('auth-exchange', 'auth.token', Buffer.from(JSON.stringify(messagePayload)), { messageId: uuid() });
         const response: IAuthResponse = await handleTokens(user._id);
         res.status(201).json(response);
     } catch (error) {
