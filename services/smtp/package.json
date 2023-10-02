@@ -12,7 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@cango91/visa-on-containers-common": "^0.1.2",
+    "@cango91/visa-on-containers-common": "^0.1.10",
     "amqplib": "^0.10.3",
     "dotenv": "^16.3.1",
     "nodemailer": "^6.9.5",

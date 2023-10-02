@@ -4,8 +4,9 @@ import { getChannel, getConnection, initializeRabbitMQ, res } from './utilities/
 import rateLimiter from './utilities/rate-limiter';
 import sendEmail from './utilities/send-email';
 import { getFailureCount, incrementFailureCount, resetFailureCount } from './utilities/failure-limiter';
+import { GenericBackoff } from '@cango91/visa-on-containers-common';
 
-// do not requeue after FAIL_TRESHOLD failures
+// do not requeue mail tasks after FAIL_TRESHOLD failures
 const FAIL_TRESHOLD = 10;
 
 // max timelimit to wait before retrying queue bindings
@@ -21,18 +22,17 @@ const qPriorities = [
 
 let channel: Channel, connection: Connection;
 
-async function bindQueues(backoff = 1000) {
-    try {
-        channel = getChannel();
-        for (const q of qPriorities) {
-            await channel.assertQueue(q, { durable: true });
-            await channel.bindQueue(q, 'email-exchange', q);
-        }
-    } catch (error) {
-        console.log(`Exchange not ready. Retrying in ${backoff}ms`);
-        await new Promise(resolve => setTimeout(resolve, backoff));
-        return bindQueues(Math.min(backoff * 2, MAX_BACKOFF));
+async function _bindQueues() {
+    channel = getChannel();
+    for (const q of qPriorities) {
+        await channel.assertQueue(q, { durable: true });
+        await channel.bindQueue(q, 'email-exchange', q);
     }
+}
+
+
+async function bindQueues() {
+    await GenericBackoff(_bindQueues, 1000, MAX_BACKOFF, "Exchange not ready");
 }
 
 async function startConsuming() {
@@ -70,14 +70,11 @@ async function startConsuming() {
 
 async function main() {
     await initializeRabbitMQ();
-    channel = getChannel();
-    channel.on("error", () => console.log("Rabbit Channel closed"));
-    channel.on("close", res);
     await rateLimiter.init();
     await startConsuming();
     connection = getConnection();
-    connection.on("error",()=>console.log("Rabbit Connection closed unexpectedly"));
-    connection.on("close",async ()=>{
+    connection.on("error", () => console.log("Rabbit Connection closed unexpectedly"));
+    connection.on("close", async () => {
         await main();
     })
 

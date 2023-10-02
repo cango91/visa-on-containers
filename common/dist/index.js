@@ -13,19 +13,22 @@ exports.GenericBackoffWithMaxRetry = exports.GenericBackoff = void 0;
 ////////////
 // FUNCTIONS 
 ///////////
-function GenericBackoff(func, backoff = 2000, max_backoff = 60000) {
+function GenericBackoff(func, backoff = 2000, max_backoff = 60000, msg) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield func();
         }
         catch (error) {
+            if (msg) {
+                console.log(msg, `... Retrying in ${backoff}ms`);
+            }
             yield new Promise(resolve => setTimeout(resolve, backoff));
-            return GenericBackoff(func, Math.min(max_backoff, backoff * 2), max_backoff);
+            return GenericBackoff(func, Math.min(max_backoff, backoff * 2), max_backoff, msg);
         }
     });
 }
 exports.GenericBackoff = GenericBackoff;
-function GenericBackoffWithMaxRetry(func, backoff = 2000, retries = 10) {
+function GenericBackoffWithMaxRetry(func, backoff = 2000, retries = 10, msg) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             yield func();
@@ -34,8 +37,11 @@ function GenericBackoffWithMaxRetry(func, backoff = 2000, retries = 10) {
             if (retries <= 0) {
                 throw new Error("Reached max retries");
             }
+            if (msg) {
+                console.log(msg, `... Retrying in ${backoff}ms`);
+            }
             yield new Promise(resolve => setTimeout(resolve, backoff));
-            return GenericBackoffWithMaxRetry(func, backoff * 2, retries - 1);
+            return GenericBackoffWithMaxRetry(func, backoff * 2, retries - 1, msg);
         }
     });
 }
