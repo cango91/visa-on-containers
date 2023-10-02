@@ -15,7 +15,7 @@ export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
     const finalConnectionString = fullConnString.join('');
     connection = await amqp.connect(finalConnectionString);
     channel = await connection.createChannel();
-    await channel.assertExchange('emailExchange', 'direct', {
+    await channel.assertExchange('email-exchange', 'direct', {
       durable: true,
     });
     console.log("Connected to RabbitMQ");

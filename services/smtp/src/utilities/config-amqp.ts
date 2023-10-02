@@ -15,9 +15,12 @@ export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
     const finalConnectionString = fullConnString.join('');
     connection = await amqp.connect(finalConnectionString);
     channel = await connection.createChannel();
-    await channel.assertExchange('emailExchange', 'direct', {
-      durable: true,
-    });
+    // await channel.assertExchange('emailExchange', 'direct', {
+    //   durable: true,
+    // });
+    //channel.on("error", res);
+    channel.on("error", ()=>console.log('rabit died'));
+    channel.on("close",res)
     console.log("Connected to RabbitMQ");
   } catch (error) {
     console.error(`Failed to connect to RabbitMQ, retrying in ${backoff}ms...`);
@@ -26,9 +29,19 @@ export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
   }
 }
 
+
 export function getChannel() {
   if (!channel) throw new Error('Channel to RabbitMQ not established yet');
   return channel;
+}
+
+export async function res(){
+  try {
+    await connection.close();
+    await initializeRabbitMQ();
+  } catch (error) {
+    console.error('Failed to restart RabbitMQ connection', error);
+  }
 }
 
 export async function closeRabbitMQ() {

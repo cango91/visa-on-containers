@@ -15,9 +15,14 @@ export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
     const finalConnectionString = fullConnString.join('');
     connection = await amqp.connect(finalConnectionString);
     channel = await connection.createChannel();
-    await channel.assertExchange('authExchange', 'direct', {
-      durable: true,
-    });
+    await channel.assertExchange('auth-exchange', 'direct', { durable: true });
+    await channel.assertQueue("auth.token", { durable: true, exclusive: true });
+    await channel.assertQueue("auth.verified", { durable: true });
+    await channel.assertQueue("auth.token-denied", { durable: true, exclusive: true });
+    await channel.bindQueue("auth.token", 'auth-exchange', "auth.token");
+    await channel.bindQueue("auth.verified", 'auth-exchange', "auth.verified");
+    await channel.bindQueue("auth.token-denied", 'auth-exchange', "auth.token-denied");
+
     console.log("Connected to RabbitMQ");
   } catch (error) {
     console.error(`Failed to connect to RabbitMQ, retrying in ${backoff}ms...`);

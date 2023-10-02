@@ -65,3 +65,11 @@ export async function createAndCacheTokenForUser(user: string | mongoose.Types.O
         throw error;
     }
 }
+
+export async function onCallback(token: string) {
+
+}
+
+export async function resendToken(user: string | mongoose.Types.ObjectId){
+    
+}
