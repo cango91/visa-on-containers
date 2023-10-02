@@ -14,14 +14,10 @@ export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
     fullConnString = [fullConnString[0], "://", SMTP_RABBIT_USER!, ":", SMTP_RABBIT_PASSWORD!, '@', fullConnString[1]];
     const finalConnectionString = fullConnString.join('');
     connection = await amqp.connect(finalConnectionString);
-    channel = await connection.createChannel();
-    // await channel.assertExchange('emailExchange', 'direct', {
-    //   durable: true,
-    // });
-    //channel.on("error", res);
-    channel.on("error", ()=>console.log('rabit died'));
-    channel.on("close",res)
+    await res();
     console.log("Connected to RabbitMQ");
+    // connection.on("error", ()=>console.log("rabbit connection closed unexpectedly. Reinitializing"));
+    // connection.on("close",initializeRabbitMQ);
   } catch (error) {
     console.error(`Failed to connect to RabbitMQ, retrying in ${backoff}ms...`);
     await new Promise(resolve => setTimeout(resolve, backoff));
@@ -35,10 +31,16 @@ export function getChannel() {
   return channel;
 }
 
-export async function res(){
+export function getConnection(){
+  if(!connection) throw new Error("Connection to RabbitMQ not established yet");
+  return connection;
+}
+
+export async function res() {
   try {
-    await connection.close();
-    await initializeRabbitMQ();
+    channel = await connection.createChannel();
+    channel.on("error", () => console.log('rabbit channel closed'));
+    channel.on("close", res);
   } catch (error) {
     console.error('Failed to restart RabbitMQ connection', error);
   }

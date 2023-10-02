@@ -1,6 +1,6 @@
 import './utilities/config-secrets';
-import { Channel, ConsumeMessage } from 'amqplib';
-import { getChannel, initializeRabbitMQ } from './utilities/config-amqp';
+import { Channel, Connection, ConsumeMessage } from 'amqplib';
+import { getChannel, getConnection, initializeRabbitMQ, res } from './utilities/config-amqp';
 import rateLimiter from './utilities/rate-limiter';
 import sendEmail from './utilities/send-email';
 import { getFailureCount, incrementFailureCount, resetFailureCount } from './utilities/failure-limiter';
@@ -19,7 +19,7 @@ const qPriorities = [
     'genericEmails',
 ];
 
-let channel: Channel;
+let channel: Channel, connection: Connection;
 
 async function bindQueues(backoff = 1000) {
     try {
@@ -68,9 +68,21 @@ async function startConsuming() {
     }
 }
 
-(async () => {
+async function main() {
     await initializeRabbitMQ();
-    channel=getChannel();
+    channel = getChannel();
+    channel.on("error", () => console.log("Rabbit Channel closed"));
+    channel.on("close", res);
     await rateLimiter.init();
     await startConsuming();
+    connection = getConnection();
+    connection.on("error",()=>console.log("Rabbit Connection closed unexpectedly"));
+    connection.on("close",async ()=>{
+        await main();
+    })
+
+}
+
+(async () => {
+    await main();
 })();
