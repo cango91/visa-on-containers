@@ -62,7 +62,7 @@ export async function createAndCacheTokenForUser(user: string | mongoose.Types.O
             counter,
             ...verification
         };
-        await (redisClient.set as any)(`verification:${user}`, JSON.stringify(verificationCache), 'EX', RETRY_WINDOW);
+        await redisClient.set(`verification:${user}`, JSON.stringify(verificationCache), { EX: RETRY_WINDOW });
         return verificationCache;
     } catch (error) {
         console.error(error);
@@ -75,7 +75,7 @@ export function verifyToken(token: string) {
     const encoded = token.split('.')[0];
     const decoded = btoa(encoded);
     const [_, user, timestamp] = decoded.split('_');
-    return {user, timestamp: parseInt(timestamp)};
+    return { user, timestamp: parseInt(timestamp) };
 }
 
 export async function resendToken(user: string | mongoose.Types.ObjectId) {
