@@ -24,6 +24,8 @@ services:
       - SMTP_RABBIT_USER
       - EMAIL_RABBIT_USER
       - EMAIL_RABBIT_PASSWORD
+      - GATEWAY_RABBIT_PASSWORD
+      - GATEWAY_RABBIT_USER
 secrets:
   REDIS_PASS:
     file: ./secrets/REDIS_PASS.txt
@@ -77,3 +79,7 @@ secrets:
     file: ./secrets/email/EMAIL_RABBIT_USER.txt
   EMAIL_RABBIT_PASSWORD:
     file: ./secrets/email/EMAIL_RABBIT_PASSWORD.txt
+  GATEWAY_RABBIT_USER:
+    file: ./secrets/gateway/GATEWAY_RABBIT_USER.txt
+  GATEWAY_RABBIT_PASSWORD:
+    file: ./secrets/gateway/GATEWAY_RABBIT_PASSWORD.txt

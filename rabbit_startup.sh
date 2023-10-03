@@ -13,7 +13,7 @@ done
 #rabbitmqctl delete_user guest
 
 # Array of service names, update this as services are added to the image
-SERVICES=("AUTH" "SMTP" "EMAIL")
+SERVICES=("AUTH" "SMTP" "EMAIL" "GATEWAY")
 
 # Declare three associative arrays for each type of permission
 declare -A SERVICE_CONFIGURE_MAPPING
@@ -23,6 +23,10 @@ declare -A SERVICE_READ_MAPPING
 SERVICE_CONFIGURE_MAPPING["AUTH"]="^(auth-exchange)$"
 SERVICE_WRITE_MAPPING["AUTH"]="^(auth-exchange)$"
 SERVICE_READ_MAPPING["AUTH"]="^(auth-exchange|gateway-exchange)$"
+
+SERVICE_CONFIGURE_MAPPING["GATEWAY"]="^(gateway-exchange|auth.token)$"
+SERVICE_WRITE_MAPPING["GATEWAY"]="^(gateway-exchange|auth.token)$"
+SERVICE_READ_MAPPING["GATEWAY"]="^(gateway-exchange|auth-exchange|auth.token)$"
 
 SERVICE_CONFIGURE_MAPPING["EMAIL"]="^(email-exchange)$"
 SERVICE_WRITE_MAPPING["EMAIL"]="^(email-exchange)$"
