@@ -37,8 +37,8 @@ secrets:
     file: ./secrets/smtp/SMTP_EMAIL_USER.txt
   SMTP_EMAIL_PASSWORD:
     file: ./secrets/smtp/SMTP_EMAIL_PASSWORD.txt
-  SMTP_EAMIL_FROM:
-    file: ./secrets/smtp/SMTP_EAMIL_FROM.txt
+  SMTP_EMAIL_FROM:
+    file: ./secrets/smtp/SMTP_EMAIL_FROM.txt
   AUTH_SERVICE_SECRET:
     file: ./secrets/authentication/AUTH_SERVICE_SECRET.txt
   AUTH_DB_URL:
@@ -55,6 +55,20 @@ secrets:
     file: ./secrets/authentication/AUTH_RABBIT_USER.txt
   AUTH_RABBIT_PASSWORD:
     file: ./secrets/authentication/AUTH_RABBIT_PASSWORD.txt
+  AUTH_GOOGLE_CLIENT_ID:
+    file: ./secrets/authentication/AUTH_GOOGLE_CLIENT_ID.txt
+  AUTH_GOOGLE_CALLBACK:
+    file: ./secrets/authentication/AUTH_GOOGLE_CALLBACK.txt
+  AUTH_JWT_SECRET:
+    file: ./secrets/authentication/AUTH_JWT_SECRET.txt
+  AUTH_JWT_EXPIRE:
+    file: ./secrets/authentication/AUTH_JWT_EXPIRE.txt
+  AUTH_REFRESH_SECRET:
+    file: ./secrets/authentication/AUTH_REFRESH_SECRET.txt
+  AUTH_REFRESH_EXPIRE:
+    file: ./secrets/authentication/AUTH_REFRESH_EXPIRE.txt
+  AUTH_SIGN_SECRET:
+    file: ./secrets/authentication/AUTH_SIGN_SECRET.txt
   EMAIL_SERVICE_SECRET:
     file: ./secrets/email/EMAIL_SERVICE_SECRET.txt
   EMAIL_DB_URL:

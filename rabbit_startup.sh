@@ -20,16 +20,16 @@ declare -A SERVICE_CONFIGURE_MAPPING
 declare -A SERVICE_WRITE_MAPPING
 declare -A SERVICE_READ_MAPPING
 
-SERVICE_CONFIGURE_MAPPING["AUTH"]=".*"
-SERVICE_WRITE_MAPPING["AUTH"]=".*"
-SERVICE_READ_MAPPING["AUTH"]=".*"
+SERVICE_CONFIGURE_MAPPING["AUTH"]="^(auth-exchange)$"
+SERVICE_WRITE_MAPPING["AUTH"]="^(auth-exchange)$"
+SERVICE_READ_MAPPING["AUTH"]="^(auth-exchange|gateway-exchange)$"
 
-SERVICE_CONFIGURE_MAPPING["EMAIL"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|email-exchange)$"
-SERVICE_WRITE_MAPPING["EMAIL"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|email-exchange)$"
-SERVICE_READ_MAPPING["EMAIL"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|email-exchange)$"
+SERVICE_CONFIGURE_MAPPING["EMAIL"]="^(email-exchange)$"
+SERVICE_WRITE_MAPPING["EMAIL"]="^(email-exchange)$"
+SERVICE_READ_MAPPING["EMAIL"]="^(email-exchange)$"
 
 SERVICE_CONFIGURE_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails)$"
-SERVICE_WRITE_MAPPING["SMTP"]="^(email-exchange|verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails)$"
+SERVICE_WRITE_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails)$"
 SERVICE_READ_MAPPING["SMTP"]="^(verificationEmails|newsEmails|promotionEmails|statusUpdateEmails|genericEmails|email-exchange)$"
 
 # Loop through each service and create a RabbitMQ user for it

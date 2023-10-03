@@ -2,7 +2,7 @@ import './utilities/config-secrets';
 import express from 'express';
 
 const app = express();
-const port = 3000;
+const port = 3010;
 
 app.get('/', (req, res) => res.send('Hello, TypeScript! This is the Gateway!'));
 
