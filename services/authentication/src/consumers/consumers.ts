@@ -1,6 +1,5 @@
 import { ConsumeMessage } from "amqplib";
 import { getChannel } from "../utilities/config-amqp";
-import { onCallback, resendToken } from "../utilities/verification-service";
 import { GenericBackoff } from "@cango91/visa-on-containers-common";
 
 const MAX_BACKOFF = 60000;
@@ -9,28 +8,6 @@ const channel = getChannel();
 export default async function startConsuming() {
     const channel = getChannel();
     await bindQueues();
-    channel.consume('gateway.auth-callback', async (message: ConsumeMessage | null) => {
-        if (message) {
-            try {
-                await onCallback(message.content.toString());
-                channel.ack(message);
-            } catch (error) {
-                console.error(error);
-                channel.nack(message, false, false);
-            }
-        }
-    });
-    channel.consume('gateway.auth-resend', async (message: ConsumeMessage | null) => {
-        if (message) {
-            try {
-                await resendToken(message.content.toString());
-                channel.ack(message);
-            } catch (error) {
-                console.error(error);
-                channel.nack(message, false, false);
-            }
-        }
-    });
 }
 
 async function bindQueues() {

@@ -14,8 +14,8 @@ export async function connectRabbitMQ() {
   console.log("Connected to RabbitMQ");
 }
 
-export async function initializeRabbitMQ(retries = 5, backoff = 3000) {
-  GenericBackoffWithMaxRetry(connectRabbitMQ, 3000, 10, "Failed to connect to RabbitMQ");
+export async function initializeRabbitMQ() {
+  await GenericBackoffWithMaxRetry(connectRabbitMQ, 3000, 10, "Failed to connect to RabbitMQ");
 }
 
 export function getChannel() {
@@ -33,7 +33,7 @@ export async function res() {
     channel = await connection.createChannel();
     channel.on("error", () => console.log('rabbit channel closed'));
     channel.on("close", res);
-    await channel.assertExchange('auth--exchange', 'direct', { durable: true, });
+    await channel.assertExchange('auth-exchange', 'direct', { durable: true, });
   } catch (error) {
     console.error('Failed to restart RabbitMQ connection', error);
   }

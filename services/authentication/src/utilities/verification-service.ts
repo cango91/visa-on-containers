@@ -1,22 +1,26 @@
 import mongoose from "mongoose";
 import crypto from 'crypto';
 import redisClient from "./config-redis";
+import { toSeconds } from "./utils";
+import User from '../models/user';
 
 const { AUTH_SIGN_SECRET } = process.env;
 const RETRY_WINDOW = 900;
 const MAX_RETRIES = 3;
 
+
 interface IVerificationCache {
     user: string | mongoose.Types.ObjectId;
     token: string;
+
 }
 
 interface IVerificationCacheCounter {
     counter: number;
 }
 
-function generateToken() {
-    return `verify_${crypto.randomBytes(16).toString('hex')}`;
+function generateToken(user: string | mongoose.Types.ObjectId) {
+    return `verify_${user}_${Date.now()}`;
 }
 
 function signToken(token: string) {
@@ -35,7 +39,7 @@ function verifySignedToken(token: string) {
 }
 
 function createTokenForUser(user: string | mongoose.Types.ObjectId) {
-    const token = generateToken();
+    const token = generateToken(user);
     const signedToken = signToken(token);
     const verification: IVerificationCache = {
         token: signedToken,
@@ -66,10 +70,18 @@ export async function createAndCacheTokenForUser(user: string | mongoose.Types.O
     }
 }
 
-export async function onCallback(token: string) {
-
+export function verifyToken(token: string) {
+    if (!verifySignedToken(token)) return null;
+    const encoded = token.split('.')[0];
+    const decoded = btoa(encoded);
+    const [_, user, timestamp] = decoded.split('_');
+    return {user, timestamp: parseInt(timestamp)};
 }
 
-export async function resendToken(user: string | mongoose.Types.ObjectId){
-    
+export async function resendToken(user: string | mongoose.Types.ObjectId) {
+    try {
+        return await createAndCacheTokenForUser(user);
+    } catch (error) {
+        return null;
+    }
 }

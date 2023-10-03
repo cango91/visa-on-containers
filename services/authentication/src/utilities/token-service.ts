@@ -4,7 +4,7 @@ import redisClient from './config-redis';
 import RefreshToken from '../models/refresh-token';
 import { toSeconds } from './utils';
 
-const { AUTH_JWT_SECRET, AUTH_JWT_EXPIRE, AUTH_REFRESH_SECRET, AUTH_REFRESH_EXP } = process.env;
+const { AUTH_JWT_SECRET, AUTH_JWT_EXPIRE, AUTH_REFRESH_SECRET, AUTH_REFRESH_EXPIRE } = process.env;
 
 /**
  * Parses a given jwt using base64url and returns its payload
@@ -39,7 +39,7 @@ export function createRefreshToken(payload: any) {
     return jwt.sign(
         { payload: { ...payload, timestamp: process.hrtime.bigint().toString() } },
         (AUTH_REFRESH_SECRET as Secret),
-        { expiresIn: AUTH_REFRESH_EXP }
+        { expiresIn: AUTH_REFRESH_EXPIRE }
     );
 }
 
@@ -75,14 +75,15 @@ export async function refreshTokens(accessToken: string, refreshToken: string): 
             storedToken = await RefreshToken.findOne({ token: refreshToken });
         }
         // if both not found, or token is revoked throw error
-        if (!storedToken || storedToken.isRevoked) throw new Error("Invalid refresh token");
+        if (!storedToken || storedToken.revoked || storedToken.token !== refreshToken) throw new Error("Invalid refresh token");
         // create and sign new refresh token and accesstoken
         const newAccessToken = createJwt((decodedAccess as JwtPayload).payload);
         const newRefreshToken = createRefreshToken((decodedRefresh as JwtPayload).payload);
         // save pair in redis idempotency cache
-        await (redisClient.set as any)(`idempotency:${key}`, JSON.stringify({ accessToken: newAccessToken, refreshToken: newRefreshToken }), 'EX', 60);
+        await redisClient.set(`idempotency:${key}`, JSON.stringify({ accessToken: newAccessToken, refreshToken: newRefreshToken }), { EX: 60 });
         // save refresh token in redis refresh token cache
-        await (redisClient.set as any)(`refresh:${(decodedAccess as JwtPayload).payload._id}`, 'NX', 'EX', toSeconds(AUTH_JWT_EXPIRE!)!*2);
+        storedToken.token = newRefreshToken
+        await redisClient.set(`refresh:${(decodedAccess as JwtPayload).payload._id}`, JSON.stringify(storedToken), { EX: toSeconds(AUTH_JWT_EXPIRE!)! * 2 });
         // save refresh token in db
         await RefreshToken.findOneAndUpdate({ token: refreshToken }, { token: newRefreshToken, expires: new Date(parseJwt(newRefreshToken).exp * 1000) });
         // return pair
