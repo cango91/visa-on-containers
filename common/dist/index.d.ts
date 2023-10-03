@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 export interface ISendMail {
     recipient: string;
     cc?: string[];
@@ -26,6 +27,16 @@ export interface IRawMail {
         body: string;
         bodyHtml?: string;
     };
+}
+export interface IMailTemplate {
+    name: string;
+    subject: string;
+    body: string;
+    bodyHtml?: string;
+    variables?: string[];
+    createdAt?: Date;
+    updatedAt?: Date;
+    _id: mongoose.Types.ObjectId | string;
 }
 export interface ILocalAuthRequest {
     email: string;

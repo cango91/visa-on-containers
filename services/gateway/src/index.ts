@@ -1,6 +1,6 @@
+import './utilities/config-secrets';
 import { startConsuming } from './consumers/consumers';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
-import './utilities/config-secrets';
 import express from 'express';
 
 const app = express();

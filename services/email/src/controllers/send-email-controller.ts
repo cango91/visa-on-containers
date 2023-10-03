@@ -65,6 +65,7 @@ export async function sendEmail(req: Request, res: Response) {
         return res.status(200).json({ message: "Email prepared and queued", body, subject, bodyHtml });
 
     } catch (error) {
+        console.error(error);
         return res.status(500).json({ message: "Internal Server Error", error });
     }
 }
