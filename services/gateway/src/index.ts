@@ -4,6 +4,7 @@ import cookieParser from 'cookie-parser';
 import { startConsuming } from './consumers/consumers';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import express from 'express';
+import bearer from './middleware/bearer';
 
 const port = 3010;
 
@@ -22,7 +23,8 @@ const configureApp = (middleware?: any[]) => {
 }
 
 
-const app = configureApp();
+const app = configureApp([bearer]);
+
 app.get('/', (req, res) => res.send('Hello, TypeScript! This is the Gateway!'));
 
 app.listen(port, () => console.log(`Gateway API service running at http://localhost:${port}/`));
