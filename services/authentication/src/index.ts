@@ -4,7 +4,6 @@ import sanitize from 'express-mongo-sanitize';
 import morgan from 'morgan';
 import authService from './middleware/auth-service';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
-import startConsuming from './consumers/consumers';
 import connectDB from './utilities/config-db';
 import authRouter from './routes/atuh-router';
 
@@ -35,7 +34,6 @@ async function initializeServices() {
     const rabbitConn = getConnection();
     rabbitConn.on("error", () => console.log("Rabbit MQ connection closed unexpectedly"));
     rabbitConn.on("close", initializeServices);
-    //await startConsuming();
 }
 
 connectDB();

@@ -127,6 +127,7 @@ export async function logout(req: Request, res: Response) {
         const { refreshToken } = req.body;
         const tk = await RefreshToken.findOneAndUpdate({ token: refreshToken }, { revoked: true }, { new: true, upsert: false });
         if (!tk) return res.status(400).json({ message: "Not found. Can't logout" });
+        await redisClient.del(`refresh:${refreshToken}`);
         res.status(204).json({ message: "Logged out" });
     } catch (error) {
         res.status(400).json(error);
