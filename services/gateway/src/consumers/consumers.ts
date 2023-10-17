@@ -25,7 +25,7 @@ export async function startConsuming() {
                 templates.sort((a, b) => Number(new Date(a.updatedAt!)) - Number(new Date(b.updatedAt!)));
                 const templateId = templates[0]._id;
                 const parsed = JSON.parse(message.content.toString());
-                const verificationLink = `${BASE_URL}/api/verify-email/?token=${parsed.token}`;
+                const verificationLink = `${BASE_URL}/api/users/verify/?token=${parsed.token}`;
                 const response = await sendServiceRequest(`${EMAIL_SERVICE_URL}/api/email/send`, EMAIL_SERVICE_SECRET!, 'POST', {
                     recipient: parsed.email,
                     content: {

@@ -73,7 +73,7 @@ export async function createAndCacheTokenForUser(user: string | mongoose.Types.O
 export function verifyToken(token: string) {
     if (!verifySignedToken(token)) return null;
     const encoded = token.split('.')[0];
-    const decoded = btoa(encoded);
+    const decoded = atob(encoded);
     const [_, user, timestamp] = decoded.split('_');
     return { user, timestamp: parseInt(timestamp) };
 }

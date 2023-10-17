@@ -1,7 +1,9 @@
 import { Request, Response } from "express";
 import { sendServiceRequest } from "../utilities/utils";
+import { AUTH_SERVICE_URL } from "../constants";
 
-const { AUTH_SERVICE_URL, AUTH_SERVICE_SECRET } = process.env;
+const { AUTH_SERVICE_SECRET } = process.env;
+
 
 export async function signup(req: Request, res: Response) {
     try {
@@ -56,7 +58,14 @@ export async function logout(req: Request, res: Response) {
 }
 export async function verify(req: Request, res: Response) {
     try {
-
+        const token = req.query.token;
+        if(!token) throw new Error("Invalid verification token");
+        const response = await sendServiceRequest(`${AUTH_SERVICE_URL}/api/auth/verify`, AUTH_SERVICE_SECRET!, "POST",{token});
+        if(response.ok){
+            return res.status(200);
+        }else{
+            return res.status(response.status).json({message: (await response.json()).message});
+        }
     } catch (error) {
         res.status(400).json(error);
     }

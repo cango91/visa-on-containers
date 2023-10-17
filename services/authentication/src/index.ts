@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import authService from './middleware/auth-service';
 import { getConnection, initializeRabbitMQ } from './utilities/config-amqp';
 import connectDB from './utilities/config-db';
-import authRouter from './routes/atuh-router';
+import authRouter from './routes/auth-router';
 
 
 const PORT = 3001;
