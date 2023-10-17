@@ -1,13 +1,13 @@
 import { Router } from "express";
 import * as authCtrl from '../controllers/auth-controller';
-import bearer from "../middleware/bearer";
+import requireLogin from "../middleware/require-login";
 
 const router = Router();
 
 router.post('/', authCtrl.signup);
 router.post('/login', authCtrl.login);
-router.post('/logout', bearer, authCtrl.logout);
-router.get('/verify', bearer, authCtrl.verify);
-router.get('/verify/resend', bearer, authCtrl.resendVerification);
+router.post('/logout', requireLogin, authCtrl.logout);
+router.get('/verify', requireLogin, authCtrl.verify);
+router.get('/verify/resend', requireLogin, authCtrl.resendVerification);
 
 export default router;
